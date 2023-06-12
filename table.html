@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="IE=edge">
+<title>Responsive Table V2 Example</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<style>
+html {
+background-size: cover;
+box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+box-sizing: inherit;
+}
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+line-height: 1.5;
+margin: 1rem;
+}
+:focus {
+outline: 0;
+position: relative;
+}
+button:focus:before {
+box-shadow: 0 0 0 4px #fff;
+bottom: 4px;
+content: "";
+left: 4px;
+outline: 4px dotted #6da003;
+position: absolute;
+/* pointer-events: none; */
+right: 4px;
+top: 4px;
+}
+::-moz-focus-inner {
+border: 0;
+}
+tr:nth-child(odd) {
+background: #eee;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+}
+th:not(.responsive) {
+background: #333;
+color: white;
+font-weight: bold;
+}
+td, th {
+padding: 6px;
+border: 1px solid #ccc;
+text-align: left;
+}
+table td {
+border-bottom: solid 1px;
+position: relative;
+text-align: left;
+}
+.visually-hidden {
+clip: rect(0.063rem, 0.063rem, 0.063rem, 0.063rem);
+font-size: 1px;
+height: .5px;
+overflow: hidden;
+position: absolute;
+white-space: nowrap;
+width: .5px;
+}
+/* Expand/ Collapse trigger */
+tr td:first-of-type {
+width: 3.5rem;
+}
+[aria-sort] button {
+font-weight: bold;
+width: 100%;
+}
+[data-expanded], [aria-expanded] {
+background: #ccc;
+border: 0;
+cursor: pointer;
+height: 100%;
+min-height: 2.750rem;
+position: relative;
+width: 2.750rem;
+}
+[aria-expanded] span,
+[data-expanded] span {
+display: none;
+font-size: 1.5rem;
+line-height: 0;
+align-items: center;
+pointer-events: none;
+}
+[aria-expanded="false"] span:first-of-type,
+[data-expanded="false"] span:first-of-type {
+display: block;
+}
+[aria-expanded="true"] span:last-of-type,
+[data-expanded="true"] span:last-of-type {
+display: block;
+}
+[aria-sort="ascending"] .Table-sort--up,
+[aria-sort="ascending"] .Table-sort--down,
+[aria-sort="ascending"] .Table-sort--sortable,
+[aria-sort="descending"] .Table-sort--up,
+[aria-sort="descending"] .Table-sort--down,
+[aria-sort="descending"] .Table-sort--sortable,
+[aria-sort="other"] .Table-sort--down,
+[aria-sort="other"] .Table-sort--up {
+display: none;
+pointer-events: none;
+}
+[aria-sort="ascending"] .Table-sort--up,
+[aria-sort="descending"] .Table-sort--down,
+[aria-sort="other"] .Table-sort--sortable {
+display: inline-block;
+pointer-events: none;
+}
+[role=row] {
+display: flex;
+border: 1px solid black;
+padding: .1rem;
+margin: .1rem;
+text-align: center;
+}
+[role=row] > * {
+width: 25%;
+}
+[role=row] button {
+width: 3rem;
+height: 3rem;
+}
+.tablet dl div:not(.extension) {
+display: flex;
+border-bottom: 1px solid gray;
+}
+.tablet dt {
+text-align: left;
+flex-wrap: nowrap;
+}
+.tablet dd {
+text-align: right;
+}
+.tablet dt, .tablet dd {
+width: 50%;
+}
+.hidden {
+visibility: hidden;
+}
+@media only screen and (max-width: 600px) {
+[role=row]:not(.first-row) {
+display: block;
+}
+.first-row > * {
+width: fit-content;
+margin: 0 auto;
+}
+}
+/*
+@media only screen and (min-width: 735px) {
+td:first-of-type {
+display: none;
+}
+}
+@media only screen and (max-width: 735px) {
+table:nth-child(2),
+th:nth-child(n+5),
+td:nth-child(n+5) {
+display: none;
+}
+} */
+/* @media only screen and (min-width: 635px) {
+[role=grid] {
+display: -webkit-flex;
+-webkit-flex-wrap: wrap;
+display: flex;
+flex-wrap: wrap;
+}
+[role="row"] {
+display: -webkit-flex;
+border-right: solid 1px black;
+-webkit-flex-wrap: wrap;
+display: flex;
+flex-wrap: wrap;
+margin: 0 auto;
+width: 14.2%;
+text-align: left;
+}
+[role=rowheader] button {
+display: -webkit-flex;
+display: flex;
+width: 100%;
+margin: 0 auto;
+}
+[role=rowheader], [role=gridcell] {
+width: 100%;
+text-align: center;
+margin: 0 auto;
+padding: .5px;
+text-align: left;
+}
+}
+@media only screen and (max-width: 635px) {
+[role=grid] {
+margin: 0 auto;
+width: 80%;
+}
+[role=row] {
+display: -webkit-flex;
+-webkit-flex-wrap: wrap;
+border-bottom: solid 1px black;
+display: flex;
+flex-wrap: wrap;
+padding: 5px;
+}
+[role=rowheader], [role=gridcell], [role=row] button{
+width: 50%;
+}
+}
+@media only screen and (min-width: 635px) {
+[role=grid] {
+margin: 0 auto;
+width: 80%;
+}
+[role=row] {
+display: -webkit-flex;
+-webkit-flex-wrap: wrap;
+border-bottom: solid 1px black;
+display: flex;
+flex-wrap: wrap;
+padding: 5px;
+}
+[role=rowheader], [role=gridcell], [role=row] button{
+width: 50%;
+}
+} */
+</style>
+</head>
+<body>
+<main>
+<h1>Responsive Table V2 Example</h1>
+<p>The following is an example of a barebones table (responsive).</p>
+<p><strong>NOTE:</strong> This table is sorted by age by default. This is not a functioning sort example. The interactive elements are provided only as an example of proper markup for sort controls when the table is collapsed.</p>
+<p>See <a href="https://confluence.wellsfargo.net/display/PDS/WIP+Table+Spec+-+v2#16038641948eca5d5f19b14d699df0756f689b25f4"> VX Specs</a> for more details. </p>
+<h2>Table Desktop View</h2>
+<div class="visually-hidden">start of table desktop view example</div>
+<!-- live region required to announce updates -->
+<span id="live-region" class="visually-hidden" aria-live="polite"></span>
+<table class="desktop table">
+<caption>Driver's License Info List</caption>
+<thead>
+<tr>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+First Name
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Last Name
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+License Number
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Birthday
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sorted descending" aria-sort="descending">
+<button>
+Age
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Weight
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Height
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Sex
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Eyes
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+<th scope="col" title="sortable" aria-sort="other">
+<button>
+Hair
+<span class="Table-sort--up" aria-hidden="true">&uarr;</span>
+<span class="Table-sort--down" aria-hidden="true">&darr;</span>
+<span class="Table-sort--sortable" aria-hidden="true">&udarr;</span>
+</button>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nancy</td>
+<td>Liu</td>
+<td>I545OI9</td>
+<td>10/23/87</td>
+<td>31</td>
+<td>150lb</td>
+<td>5'3</td>
+<td>Female</td>
+<td>Blue</td>
+<td>Red</td>
+</tr>
+<tr>
+<td>Darren</td>
+<td>Anderson</td>
+<td>L945JF98</td>
+<td>9/3/90</td>
+<td>29</td>
+<td>172lb</td>
+<td>5'8</td>
+<td>Male</td>
+<td>Green</td>
+<td>Gray</td>
+</tr>
+<tr>
+<td>Bryan</td>
+<td>Lee</td>
+<td>P43K3459</td>
+<td>6/29/82</td>
+<td>38</td>
+<td>180lb</td>
+<td>5'5</td>
+<td>Male</td>
+<td>Brown</td>
+<td>Black</td>
+</tr>
+<tr>
+<td>Cynthia</td>
+<td>Gonzalez</td>
+<td>G949K345</td>
+<td>3/11/91</td>
+<td>28</td>
+<td>160lb</td>
+<td>5'2</td>
+<td>Female</td>
+<td>Brown</td>
+<td>Brown</td>
+</tr>
+</tbody>
+</table>
+<div class="visually-hidden">end of table desktop view example</div>
+<h2>Table Tablet/ Mobile View</h2>
+<div class="visually-hidden">start of table tablet/ mobile view example</div>
+<div id="tablet-cap" class="grid-cap">Drivers License Info</div>
+<div role="grid" class="table tablet" aria-labelledby="tablet-cap">
+<div role="row" class="first-row">
+<div role="gridcell"></div>
+<div role="gridcell">
+<button type="button" class="expand-all" aria-label="expand all 4 rows" data-expanded="false">
+<span aria-hidden="true">&#x2795;</span>
+<span aria-hidden="true">&#x2796;</span>
+</button>
+</div>
+<div role="gridcell"></div>
+<div role="gridcell">column sort place holder</div>
+</div>
+<div role="row">
+<div role="gridcell">1</div>
+<div role="gridcell">
+<button class="first-col" aria-label="more about nancy" aria-controls="nancy2" aria-expanded="false">
+<span aria-hidden="true">&#x2795;</span>
+<span aria-hidden="true">&#x2796;</span>
+</button>
+</div>
+<div role="gridcell">
+<dl>
+<div>
+<dt>First Name:</dt>
+<dd>Nancy</dd>
+</div>
+<div id="nancy2" class="extension" hidden>
+<div>
+<dt>Last Name:</dt>
+<dd>Liu</dd>
+</div>
+<div>
+<dt>License Number:</dt>
+<dd>I545OI9</dd>
+</div>
+</div>
+</dl>
+</div>
+<div role="gridcell"></div>
+</div>
+<div role="row">
+<div role="gridcell">2</div>
+<div role="gridcell">
+<button class="first-col" aria-label="more about darren" aria-controls="darren2" aria-expanded="false">
+<span aria-hidden="true">&#x2795;</span>
+<span aria-hidden="true">&#x2796;</span>
+</button>
+</div>
+<div role="gridcell">
+<dl>
+<div>
+<dt>First Name:</dt>
+<dd>Darren</dd>
+</div>
+<div id="darren2" class="extension" hidden>
+<div>
+<dt>Last Name:</dt>
+<dd>Anderson</dd>
+</div>
+<div>
+<dt>License Number:</dt>
+<dd>L945JF98</dd>
+</div>
+</div>
+</dl>
+</div>
+<div role="gridcell"></div>
+</div>
+</div>
+<div class="visually-hidden">end of table tablet/ mobile view example</div>
+</main>
+<script>
+var liveRegion = document.getElementById('live-region');
+var rows = Array.prototype.slice.call(document.querySelectorAll('button[aria-expanded]'));
+//expand all rows
+[].slice.call(document.querySelectorAll('.expand-all')).forEach(expandAllTrigger => {
+var tableRows = Array.prototype.slice.call(expandAllTrigger.closest('.table').querySelectorAll('button[aria-expanded]'));
+console.log(tableRows);
+expandAllTrigger.addEventListener('click', function (event) {
+var target = event.target;
+var isExpanded = target.getAttribute('data-expanded') === 'true';
+target.setAttribute('data-expanded', !isExpanded);
+tableRows.forEach(function (row) {
+var controls = document.getElementById(row.getAttribute('aria-controls'));
+row.setAttribute('aria-expanded', !isExpanded);
+if (isExpanded) {
+controls.setAttribute('hidden', '');
+target.setAttribute('aria-label', 'Expand all ' + rows.length + ' rows');
+updateLiveRegion(rows.length + ' items collapsed');
+} else {
+controls.removeAttribute('hidden');
+target.setAttribute('aria-label', 'Collapse all ' + rows.length + ' rows');
+updateLiveRegion(rows.length + ' items expanded');
+}
+});
+});
+});
+//expand individual row
+rows.forEach(function (row) {
+row.addEventListener('click', function (event) {
+var target = event.target;
+var isExpanded = target.getAttribute('aria-expanded') === 'true';
+target.setAttribute('aria-expanded', !isExpanded);
+if (isExpanded) { // need collapse
+document.getElementById(target.getAttribute('aria-controls')).setAttribute('hidden', '');
+} else {
+document.getElementById(target.getAttribute('aria-controls')).removeAttribute('hidden', '');
+}
+});
+});
+//announce changes
+var updateLiveRegion = function updateLiveRegion(text) {
+liveRegion.innerText = text;
+setTimeout(function () {
+liveRegion.innerText = '';
+}, 1000);
+};
+</script>
+</body>
+</html>
