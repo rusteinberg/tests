@@ -1,1 +1,0 @@
-https://www.tutorialspoint.com/how-to-use-javascript-fetch-api-to-get-data
