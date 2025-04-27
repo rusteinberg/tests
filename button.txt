@@ -1,0 +1,5 @@
+<button type="button" data-bi-id="profile.profile-page.close-edit-profile-info" aria-label="Cancel" class="ms-Button ms-Button--icon root-402" data-is-focusable="true">
+<span class="ms-Button-flexContainer flexContainer-155" data-automationid="splitbuttonprimary">
+<i data-icon-name="Cancel" aria-hidden="true" class="ms-Icon root-89 css-306 ms-Button-icon icon-157" style="font-family: FabricMDL2Icons;">?</i>
+</span>
+</button>
