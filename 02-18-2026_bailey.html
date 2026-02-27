@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+</head>
+
+<body>   
+<h1 id="title" aria-current="page" itemprop="name headline">Here&rsquo;s how to instruct a LLM to reference the ARIA Authoring Practices Guide</h1>
+<div id="content" itemprop="articleBody">
+  <p>Say you&rsquo;re working with a LLM and training it to write good frontend code. <a href="https://annaecook.com/writing/2026/2/2/accessible-design-is-digital-infrastructure">Good frontend code is accessible code</a>, so of course you want to instruct the LLM to produce it.</p>
+  <p>However, <a href="https://webaim.org/projects/million/#errors">the bulk of frontend code on the web is inaccessible</a> to some degree. Also know here that LLMs are trained on the majority of the world&rsquo;s frontend code. Similarly, many contemporary LLM-friendly UI libraries claim to be accessible, but may have varying degrees of support when manually evaluated.</p>
+  <p><a href="https://microsoft.github.io/a11y-llm-eval-report/">The deck is a bit stacked</a>, folks.</p>
+  <p>Given that, you need to <strong>get creative about how to handle the LLM&rsquo;s training</strong>. It might seem like a good idea to instruct an LLM—reference, skill, agent, sub-agent, what have you—to reference <a href="https://www.w3.org/WAI/ARIA/apg/">the ARIA Authoring Practices Guide</a> (<abbr>APG</abbr>), because it <a href="https://www.w3.org/WAI/ARIA/apg/patterns/">lists a lot of common UI patterns</a>, right?</p>
+  <p>Well, sorta.</p>
+  <h2 id="the-reality-of-things">The reality of things</h2>
+  <p><strong>The APG was created to demonstrate ARIA&rsquo;s capabilities</strong>. Because of this, it <strong>disproportionately favors ARIA in its code examples</strong>. This is even in spite of <a href="https://www.w3.org/TR/using-aria/#rule1">ARIA&rsquo;s first rule</a>.</p>
+  <p>The APG was also <strong>not</strong> created to serve as a pattern library, design system, or single source of truth for the &ldquo;right way&rdquo; to make something. Unfortunately, a lot of people treat it this way.</p>
+  <p>Furthermore, the code examples themselves on the APG have an—ahem—range of effectiveness. Some code examples are fine. Some of them kind of work in an awkward and confusing way. Some of them don&rsquo;t work at all.</p>
+  <p>Recall here that the original reason for APG code is to <strong>be a showpiece for how ARIA could hypothetically be used</strong>. Because of this, it is not the APG&rsquo;s concern that <a href="https://www.a11yproject.com/posts/aria-has-perfect-support/">ARIA does not have perfect support</a>.</p>
+  <p>Also recall that LLMs love ingesting and utilizing structured content. And it&rsquo;s an understatement to say that <strong>code is structured content</strong>.</p>
+  <p>While we&rsquo;re on the topic of code: The APG&rsquo;s examples are written in a way that may be incompatible with your organization&rsquo;s way of doing things. Think frameworks, naming conventions, linting rules, and other areas of friction.</p>
+  <p>The friction caused by this incompatibility may disrupt the <a href="https://www.ibm.com/think/topics/context-window">LLM&rsquo;s context window</a> in some way. This is not a good thing.</p>
+  <h2 id="instrumentality">Instrumentality</h2>
+  <p>If you instruct a LLM to retrieve <strong>all</strong> of the content of the APG, <strong>this bias will be encoded and perpetuated</strong> at the scale of the number of people who use it.</p>
+  <p>You should also consider the second-stage effects of other LLMs referencing the code your LLM generates. Meanwhile, I will be considering quitting tech to start a combination punk rock venue/mushroom farm.</p>
+  <h3 id="apg%3A-the-good-parts">APG: The good parts</h3>
+  <p>From the perspective of both a LLM <strong>and</strong> a human, the good parts of the APG are:</p>
+  <ul>
+    <li><strong>The pattern names</strong>. Having a standardized way to refer to a discrete piece of UI that is larger than any one company is highly beneficial.</li>
+    <li><strong>The content contained in the &ldquo;About This Pattern&rdquo; section</strong>. This is what the discrete piece of UI does, and how it goes about doing it.</li>
+    <li><strong>The content contained in the &ldquo;Keyboard Interaction&rdquo; section</strong>. This is how people who use assistive technology will expect things to work.</li>
+  </ul>
+  <p>Everything else <a href="https://adrianroselli.com/2023/04/no-apgs-support-charts-are-not-can-i-use-for-aria.html">is suspect</a>.</p>
+  <h3 id="but-what-about-the-%E2%80%9Cwai-aria-roles%2C-states%2C-and-properties%E2%80%9D-section%3F">But what about the &ldquo;WAI-ARIA Roles, States, and Properties&rdquo; section?</h3>
+  <p>LLMs are not good at nuance.</p>
+  <p>The WAI-ARIA Roles, States, and Properties section of each APG pattern should be treated as <strong>human-facing informative content</strong>. This is to better avoid a situation where a LLM will &ldquo;read&rdquo; that something should have a role, then <a href="https://css-tricks.com/i-learned-the-first-rule-of-aria-the-hard-way/">try to literally apply a role attribute</a>.</p>
+  <p>You want to encourage use of <a href="https://primer.style/accessibility/design-guidance/semantic-html-and-aria/#native-semantics">the role implicitly conferred by a native, semantic HTML element</a>. Using the button element for buttons, the anchor element for links—you know, that sad old sorry story.</p>
+  <p>You will also probably need instructions on how to cajole the LLM to barf out the semantic HTML that the majority of the industry has largely been allergic to using for decades. <strong><a href="https://gerireid.com/blog/ai-is-accidently-making-documentation-accessible/">Organization-specific content</a> is likely key for this effort</strong>—especially if tethered to, and reinforced by a design system.</p>
+  <h2 id="shut-up-and-give-me-the-code%2C-nerd">Shut up and give me the code, nerd</h2>
+  <p>Here&rsquo;s what I&rsquo;ve found to be helpful:</p>
+  <pre>## [ARIA Authoring Practices Guide (APG) patterns](https://www.w3.org/WAI/ARIA/apg/patterns/)<br>Partially trusted source. Use selectively.<br><br>**CAN reference:**<br>- Content in "About This Interaction" sections<br>- Content in "Keyboard Interaction" sections<br><br>**CANNOT reference:**<br>- Code examples from APG<br>- CodePen links (URLs starting with `https://codepen.io/`)</pre>
+  <p>This might change over time, but right now it seems to help to push a LLM towards only slurping up the salient bits.</p>
+  <h2 id="there-is-a-world-of-difference-between-a-disclosure-and-a-tree-view">There is a world of difference between a disclosure and a tree view</h2>
+  <p>The more complicated a component is, the higher the chance it will need tweaks to its underlying structure to interface with assistive technology as expected.</p>
+  <p>Content like <a href="https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/">disclosures</a> are both simple and well-established. This means they have good support. As a spicy twist here, the APG&rsquo;s recommendation of aria-controls fails to mention that JAWS is the only screen reader to support the declaration, thus reinforcing the larger point of this post.</p>
+  <p>Content like tree views are far more complex. They <a href="https://github.blog/engineering/user-experience/considerations-for-making-a-tree-view-component-accessible/#fix-interoperability-issues">need intervention to work as expected</a> across a spread of popular assistive technologies.</p>
+  <p>This range of differences is even more true as these entities are brought out of the realm of the platonic and are integrated into the real-world ecosystems that are your websites and web apps—with all their constituent functionality and content needs.</p>
+  <h2 id="this-kind-of-insinuates-that-you%E2%80%99re-indirectly-advocating-for-the-removal-of-code-examples-from-the-apg">This kind of insinuates that you&rsquo;re indirectly advocating for the removal of code examples from the APG</h2>
+  <p>I know that effort and care went into the creation of the APG&rsquo;s code examples. I also am acutely aware of how draining it can be to manage a large and popular open source project, especially one that does not pay.</p>
+  <p>However, I also get the sense that the APG&rsquo;s code examples are not actively maintained. I think the code examples&rsquo; inclusion are poised to cause more harm than good. This is born of considering network effects combined with an LLM-first approach seeming to be how the industry is settling on building things.</p>
+  <h2 id="i%E2%80%99m-not-working-on-a-llm%2C-but-our-organization-is">I&rsquo;m not working on a LLM, but our organization is</h2>
+  <p>It might be worth asking how your organization&rsquo;s LLM(s) are approaching producing accessible frontend code. If referencing the APG, it also might be worth investigating how the LLM has specifically been instructed about going about it.</p>
+  <p>I am willing to bet said instructions are nothing more than a URL included in a list of other related resources. This is likely due to most people&rsquo;s misunderstanding of the APG&rsquo;s original intent—to say nothing of <a href="https://adrianroselli.com/2025/10/openai-aria-and-seo-making-the-web-worse.html">OpenAI putting their thumb on the scale</a> with an amount of influence matched only by their ignorance.</p>
+  <p>Consider approaching asking with a sense of careful curiosity. Systems may not react well to pointing out that their magic code generating toy has flaws, even if you believe yourself to be <a href="https://www.phrases.org.uk/meanings/on-the-side-of-the-angels.html">on the side of the angels</a>.</p>
+  <h2 id="how-do-i-teach-my-llm-about-aria-if-the-apg-ain%E2%80%99t-it%3F">How do I teach my LLM about ARIA if the APG ain&rsquo;t it?</h2>
+  <p>You can point it at <a href="https://www.w3.org/TR/wai-aria/">the WAI-ARIA specification</a> for starters. You might also want to think about how you do so, since it is a large document.</p>
+  <p>Another thing to consider is <strong>granularly explaining the relationship between ARIA usage and human-facing value</strong> in your documentation. These more discrete, per-component examples will probably also help guard against unwanted hallucinations.</p>
+  <p>As an aside: We live in a liminal space where LLM-optimized instructional content still approximately resembles human-friendly language. I wish an appeal to human-facing value was enough to incentivize organizations to invest in good documentation, but I&rsquo;ll take what I can get.</p>
+  <h2 id="so%2C-what-about-aria-that-isn%E2%80%99t-supported-by-assistive-technology%3F">So, what about ARIA that isn&rsquo;t supported by assistive technology?</h2>
+  <p>Right now I am pinning all my hopes on <a href="https://lolaslab.co/blog/2025/accessibility-compat-data/">the Accessibility Compat Data Project</a> (<abbr>ACD</abbr>). Until that dream becomes a reality—and even after it—I advise <a href="https://ericwbailey.website/published/evaluating-fables-pay-per-project-offering/">testing your digital experiences with actual daily assistive technology users</a>.</p>
+  <p>And hey, maybe someone reading this post will <a href="https://opencollective.com/lolas-lab">help fund ACD&rsquo;s vital efforts</a> the same way <a href="https://www.opensourceforu.com/2026/01/tailwind-css-collapses-under-ai-usage-rescued-by-google-vercel-lovable/">Google was so quick to throw money at Tailwind</a>.</p>
+  <h2 id="this-is-all-too-much%2C-i-just-don%E2%80%99t-want-my-boss-to-get-mad-at-me">This is all too much, I just don&rsquo;t want my boss to get mad at me</h2>
+  <p><a href="https://commission.europa.eu/strategy-and-policy/policies/justice-and-fundamental-rights/disability/european-accessibility-act-eaa_en">The European Accessibility Act</a> is a thing now. Many US-based companies also have important clients with EU-based data sovereignty.</p>
+  <p>Speaking in broad generalities, there are two things engineers are good at: making things easier for themselves, and creating a big stink when it&rsquo;s not convenient to do so. Maybe it&rsquo;s time to start making some noise on issue trackers.</p>
+  <h2 id="while-i-have-you%2C-how-should-i-stay-on-top-of-non-deterministic-tools-potentially-breaking-the-vital-underlying-semantics-of-an-experience-every-time-they-generate-or-regenerate-code%3F">While I have you, how should I stay on top of non-deterministic tools potentially breaking the vital underlying semantics of an experience every time they generate or regenerate code?</h2>
+  <p>Man, I don&rsquo;t know.</p>
+  <h2 id="won%E2%80%99t-components-created-via-structured-data-nip-the-non-deterministic-problem-in-the-bud%3F">Won&rsquo;t components created via structured data nip the non-deterministic problem in the bud?</h2>
+  <p>Projects like <a href="https://json-render.dev/">json-render</a> are interesting. But also know the problems intrinsic to what I&rsquo;m outlining exist on levels deeper than most are willing to invest in addressing.</p>
+  <h2 id="and-say%2C-what-about-performance-and-security%3F">And say, what about performance and security?</h2>
+  <p>Accessibility and security operate similarly, at least in terms of organizational dynamics.</p>
+  <p><a href="https://blurbify.net/why-do-llms-pick-react-js/">LLMs favor React</a>, and <a href="https://www.theregister.com/2025/12/15/react2shell_flaw_china_iran/">React can be hacked now</a>. So, this is a fun new battle between the forces of convenience and trust. And speaking of convenience: <a href="https://infrequently.org/2025/11/performance-inequality-gap-2026/">Performance is a lost battle</a>, as far as <a href="https://sgom.es/posts/2026-02-13-js-heavy-approaches-are-not-compatible-with-long-term-performance-goals/">I&rsquo;m concerned</a>.</p>
+  <h2 id="don%E2%80%99t-you-think-all-of-this-is-a-moot-point-in-a-future-where-everything-is-agentically-operated%3F">Don&rsquo;t you think all of this is a moot point in a future where everything is agentically-operated?</h2>
+  <p>That promised future—using a carnival ticket-based economy to push proprietary black box technology—seems to be <a href="https://bsky.app/profile/spavel.bsky.social/post/3mesvq6zue22c">perpetually right around the corner</a>. Let&rsquo;s also not forget that most of these companies are selling their vision of the future at a loss.</p>
+  <p>In the meantime we have actual websites and web apps that need to be worked on.</p>
+  <h2 id="you-seem-kind-of-glum%2C-what-gives%3F">You seem kind of glum, what gives?</h2>
+  <p>I am becoming increasingly more convinced the future of accessibility on the web will be both:</p>
+  <ol>
+    <li>An unwinnable Cold War arms race of reactive <a href="https://en.wikipedia.org/wiki/Monkey_patch">monkey patching</a> to try and solve the <a href="https://notes.jim-nielsen.com/#2026-02-15T2316">all-gas-no-brakes</a>, ever-increasing nondeterministic code changes problem with even more non-deterministic code, all the while contending with <a href="https://www.computerworld.com/article/4059383/openai-admits-ai-hallucinations-are-mathematically-inevitable-not-just-engineering-flaws.html">certain intractable realities</a>.</li>
+    <li><a href="https://mantisandco.com/resources/guides/future-of-accessibility/ericwbailey">A larger performative dance</a> of <a href="https://buttondown.com/access-ability/archive/dont-fall-into-the-accessibility-gradescore-trap/">metrics-obsession</a> that inserts an artificial layer between nominally satisfying legal and contractual obligations and the more important work of ensuring an experience is actually usable.</li>
+  </ol>
+  <h2 id="are-you-spiraling%3F">Are you spiraling?</h2>
+  <p>Probably!</p>
+  <h2 id="harm-reduction-in-the-face-of-supposed-inevitability">Harm reduction in the face of supposed inevitability</h2>
+  <p>Pessimism of the intelligence, optimism of the will.</p>
+  <p>You&rsquo;ll still be shepherding and deploying probabilistic munging. Hopefully now the shepherding and deploying are at least a tiny bit more directed.</p>
+  <div>
+    <p>Published on February 16, 2026. <a href="https://ericwbailey.website/tags/AI">AI</a>, <a href="https://ericwbailey.website/tags/Accessibility">Accessibility</a>, <a href="https://ericwbailey.website/tags/Approach">Approach</a>, <a href="https://ericwbailey.website/tags/ARIA">ARIA</a>, <a href="https://ericwbailey.website/tags/Assistive%20Technology">Assistive Technology</a>, <a href="https://ericwbailey.website/tags/Design%20Systems">Design Systems</a>, <a href="https://ericwbailey.website/tags/Development">Development</a>, <a href="https://ericwbailey.website/tags/Harm%20Reduction">Harm Reduction</a>, <a href="https://ericwbailey.website/tags/HTML">HTML</a>.</p>
+  </div>
+</div>
+<div>
+  <p aria-hidden="true">&nbsp;</p>
+</div>
+</body>
+</html>
