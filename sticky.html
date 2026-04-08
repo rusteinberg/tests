@@ -1,0 +1,277 @@
+<!-- https://creativecommons.org/licenses/by-sa/4.0/ -->
+<style>
+/* Required: */
+
+header {
+    left: 0;
+    position: static;
+    top: 0;
+}
+@media (min-width: 40rem) {
+    header {
+        position: sticky;
+    }
+}
+        
+/* Optional: */
+
+:root {
+    font-family: sans-serif;
+    font-size: 1.2em;
+}
+html, body {
+    background: #fff;
+    margin: 0;
+    color: #444;
+}
+ul, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+a:focus {
+    outline: 2px solid #05f;
+    outline-offset: 2px;
+}
+
+header {
+    background: #ded;
+    border: 2px solid #090;
+    box-sizing: border-box;
+    padding: 1rem;
+    width: 100%;
+}
+header > h2::after {
+    content: " (static)";
+}
+@media (min-width: 40rem) {
+    header {
+        background: #fec;
+        border-color: #f60;
+    }
+    header > h2::after {
+        content: " (sticky)";
+    }
+}
+header h2 {
+    font-weight: normal;
+    margin: 0 0 1rem 0;
+}
+header nav,
+header nav ul,
+header nav li {
+    display: flex;
+    flex-wrap: wrap;
+}
+header nav a {
+    background: #fff;
+    border: 2px solid #090;
+    color: #05f;
+    display: block;
+    margin: 0 2px 2px 0;
+    padding: 0.4rem 0.7rem;
+    position: relative;
+    z-index: 0;
+}
+@media (min-width: 40rem) {
+    header nav a {
+        border-color: #f60;
+    }
+}
+header nav a:focus {
+    z-index: 1;
+}
+
+main {
+    padding: 2rem;
+}
+main h1 {
+    font-weight: normal;
+    margin: 0 0 1rem 0;
+}
+main p {
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+}
+main a {
+    background: #eee;
+    border: 2px solid #666;
+    color: #05f;
+    display: inline-block;
+    margin: 0 0 6px 0;
+    min-width: 4rem;
+    padding: 0.4rem 0.7rem;
+}
+</style>
+<script>
+/* Required: */
+
+window.addEventListener('DOMContentLoaded', () => {
+
+    if(!!!('ResizeObserver' in window)) { return; }
+
+    let sticky = {};
+    for(const key of ['header', 'footer']) {
+        sticky[key] = document.querySelector(`[data-sticky-${key}]`);
+    };
+    if(!(sticky.footer || sticky.header)) {
+        throw new Error('StickyMargin: sticky elements are not defined');
+    }
+    for(const key of ['selector', 'media', 'offset']) {
+        sticky[key] = null;
+        const source = document.querySelector(`[data-sticky-${key}]`);
+        if(source) {
+            sticky[key] = source.getAttribute(`data-sticky-${key}`).trim();
+        }
+    };
+    if(isNaN(sticky.offset = parseInt(sticky.offset, 10))) {
+        sticky.offset = 0;
+    }
+
+    const applyStickyMargin = (e) => {
+
+        const focused = document.activeElement || document.body;
+
+        let applicable = focused !== document.body;
+        if(applicable && sticky.header) {
+            applicable = !sticky.header.contains(focused);
+        }
+        if(applicable && sticky.footer) {
+            applicable = !sticky.footer.contains(focused);
+        }
+        if(applicable && sticky.selector) {
+            applicable = focused.matches(sticky.selector);
+        }
+
+        if(applicable) {
+
+            const edge = {
+                header  : (sticky.header ? sticky.header.getBoundingClientRect().bottom + sticky.offset : 0),
+                footer  : (sticky.footer ? sticky.footer.getBoundingClientRect().top - sticky.offset : 0)
+            };
+            const diff = {
+                top     : (sticky.header ? focused.getBoundingClientRect().top - edge.header : 0),
+                bottom  : (sticky.footer ? focused.getBoundingClientRect().bottom - edge.footer : 0)
+            };
+
+            if(diff.top < 0) {
+                window.scrollBy(0, diff.top);
+            }
+            else if(diff.bottom > 0) {
+                window.scrollBy(0, diff.bottom);
+            }
+        }
+    };
+
+
+    const observer = new ResizeObserver(applyStickyMargin);
+
+    const enableStickyMonitors = () => {
+
+        if(sticky.header) { observer.observe(sticky.header); }
+        if(sticky.footer) { observer.observe(sticky.footer); }
+
+        document.addEventListener('focus', applyStickyMargin, true);
+    };
+
+    const disableStickyMonitors = () => {
+
+        if(sticky.header) { observer.unobserve(sticky.header); }
+        if(sticky.footer) { observer.unobserve(sticky.footer); }
+
+        document.removeEventListener('focus', applyStickyMargin, true);
+    };
+
+
+    let matches = true;
+
+    if(sticky.media) {
+
+        const query = window.matchMedia(sticky.media);
+        matches = query.matches;
+
+        query.addEventListener('change', (e) => {
+            if(matches = e.matches) {
+                enableStickyMonitors();
+            } else {
+                disableStickyMonitors();
+            }
+        });
+    }
+
+    if(matches) {
+        enableStickyMonitors();
+    }
+});
+</script>
+        
+<!--
+[data-sticky-header]   (conditionally required) this element is the sticky header
+[data-sticky-offset]   (optional recommended) how many pixels offset should be added to the sticky margin
+[data-sticky-media]    (optional recommended) media query for when the scripting should run
+[data-sticky-selector] (optional) selector for which elements have the sticky margin applied
+-->
+<header data-sticky-header data-sticky-offset="6" data-sticky-media="(min-width: 40rem)" data-sticky-selector="main *:focus">
+
+    <h2>Header</h2>
+
+    <nav>
+        <ul>
+            <li><a href="#">Nav 1</a></li>
+            <li><a href="#">Nav 2</a></li>
+            <li><a href="#">Nav 3</a></li>
+            <li><a href="#">Nav 4</a></li>
+            <li><a href="#">Nav 5</a></li>
+            <li><a href="#">Nav 6</a></li>
+            <li><a href="#">Nav 7</a></li>
+            <li><a href="#">Nav 8</a></li>
+            <li><a href="#">Nav 9</a></li>
+            <li><a href="#">Nav 10</a></li>
+        </ul>
+    </nav>
+
+</header>
+<main>
+
+    <h1>Sticky Margin Demo</h1>
+
+    <p>To see the script's behavior in action: TAB down to the bottom of the page, and then start to SHIFT+TAB back up again. When keyboard focus reaches the bottom of the header, the scroll position of focused elements is adjusted as necessary, so they can't be obscured by the header.</p>
+    <p>For this demo, the behavior only applies if the viewport width is <code>40rem</code> or more. For smaller viewports, the header is static rather than sticky, and so the sticky margin isn't applied.</p>
+
+    <ul>
+        <li><a href="#">Link 1</a></li>
+        <li><a href="#">Link 2</a></li>
+        <li><a href="#">Link 3</a></li>
+        <li><a href="#">Link 4</a></li>
+        <li><a href="#">Link 5</a></li>
+        <li><a href="#">Link 6</a></li>
+        <li><a href="#">Link 7</a></li>
+        <li><a href="#">Link 8</a></li>
+        <li><a href="#">Link 9</a></li>
+        <li><a href="#">Link 10</a></li>
+        <li><a href="#">Link 11</a></li>
+        <li><a href="#">Link 12</a></li>
+        <li><a href="#">Link 13</a></li>
+        <li><a href="#">Link 14</a></li>
+        <li><a href="#">Link 15</a></li>
+        <li><a href="#">Link 16</a></li>
+        <li><a href="#">Link 17</a></li>
+        <li><a href="#">Link 18</a></li>
+        <li><a href="#">Link 19</a></li>
+        <li><a href="#">Link 20</a></li>
+        <li><a href="#">Link 21</a></li>
+        <li><a href="#">Link 22</a></li>
+        <li><a href="#">Link 23</a></li>
+        <li><a href="#">Link 24</a></li>
+        <li><a href="#">Link 25</a></li>
+        <li><a href="#">Link 26</a></li>
+        <li><a href="#">Link 27</a></li>
+        <li><a href="#">Link 28</a></li>
+        <li><a href="#">Link 29</a></li>
+        <li><a href="#">Link 30</a></li>
+    </ul>
+
+</main>
+
+    
+
