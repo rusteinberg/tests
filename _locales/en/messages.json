@@ -1,0 +1,10 @@
+{
+   "extensionDescription": {
+      "description": "Summary of what this extension does.",
+      "message": "Automatically sort bookmarks by title, date, or URL."
+   },
+   "extensionName": {
+      "description": "The name of this extension.",
+      "message": "Sprucemarks"
+   }
+}
